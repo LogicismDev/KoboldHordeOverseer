@@ -196,7 +196,11 @@ function closeManageWorkers(persistcache = false) {
 
             let textbox = document.getElementById("worker" + i + "textbox");
             if (textbox.value !== userworkers[i - 1].info) {
-                payloaddata.info = textbox.value;
+				if (textbox.value === undefined) {
+					payloaddata.info = "";
+				} else {
+                	payloaddata.info = textbox.value;
+				}
             }
 
             let checkbox = document.getElementById("worker" + i + "checkbox");
@@ -330,12 +334,12 @@ async function grabWorkersList(cached = false) {
 
         workerElement.innerHTML = `
 			<div>
-        		<div class="${worker.maintenance_mode == true ? "maintenance-text " : ""}${worker.info != null && worker.info != "" ? "link" : ""}" ${worker.info != null && worker.info != "" ? "onclick=\"openWorkerInfo(\'" + worker.info + "\')\"" : ""} style="font-weight: bold; font-size: 1.2em; width: inherit; float: left;">${worker.name}</div>
+        		<div class="${worker.maintenance_mode == true ? "maintenance-text " : ""}${worker.info != null && worker.info != "" ? "link" : ""}" ${worker.info != null && worker.info != "" ? "onclick=\"openWorkerInfo(\'" + worker.info.replace(/'/g, "\\'") + "\')\"" : ""} style="font-weight: bold; font-size: 1.2em; width: inherit; float: left;">${worker.name}</div>
         		<div style="font-weight: normal; width: 100%; text-align: right; padding-top: 2px; padding-bottom: 3px;">${secondsToDHM(worker.uptime)}</div>
       		</div>
       		<div>
         		<div style="font-weight: lighter; font-size: 0.8em; width: inherit; float: left;">ID: ${worker.id}</div>
-        		<div style="font-size: 0.7em; width: 100%; text-align: right;">${(worker.threads == 1 ? "1 Thread" : worker.threads + " Threads") + (worker.trusted == true ? " | Trusted" : "")}</div>
+        		<div style="font-size: 0.7em; width: 100%; text-align: right;">${(worker.threads == 1 ? "1 Thread" : worker.threads + " Threads") + (worker.trusted == true ? " | Trusted" : "") + (worker.accepts_chat_jobs == true ? " | Chat" : "")}</div>
       		</div>
       		<div style="border-top: 2px solid; margin-top: 8px; padding-bottom: 6px;"></div>
       		<div style="text-wrap: wrap;"><b>Model:</b> ${worker.models[0]}</div>
